@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>Login using telegram</h3>
+<form method="post" action = "{{ url_for('post_login') }}">
+<label><h5>Enter the Otp here  </h5> </label><input type="text" name="otp" placeholder="otp"/><br/>     
+{% if error %}
+    <p><strong>Error:</strong> {{ error }}
+{% endif %}<br/><br/>
+<input type="submit" value="submit" />
+</form>
+{% endblock %}
