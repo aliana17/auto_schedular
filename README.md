@@ -6,3 +6,5 @@ Libraries to install
 - pip install flask
 - pip install python-telegram-bot
 - pip install requests
+- pip install tweepy
+
