@@ -1,4 +1,15 @@
 {% extends 'base.html' %}
 {% block content %}
-   
+    {{status}}
+    <form method="post" action="{{ url_for('send_message') }}" enctype="multipart/form-data">
+        <label>Type your message to post</label><br/>
+        <textarea name="msg" rows="5" col="100"></textarea><br/><br/>
+        <input type="file" name="file" autocomplete="off">
+        <label>Select Platfoms to post</label>
+        <label><input type="checkbox" name="cb1"> Facebook </label> 
+        <label><input type="checkbox" name="cb2"> Twitter  </label><br/>
+        <label><input type="checkbox" name="cb3"> LinkedIn  </label><br/>
+        <label><input type="checkbox" name="cb4"> Telegram  </label><br/>
+        <input type="submit" value="submit" />
+   </form>
 {% endblock %}

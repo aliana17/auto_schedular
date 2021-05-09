@@ -1,10 +1,85 @@
 {% extends 'base.html' %}
+{% block content_style %}
+    <style>
+        /* The popup form - hidden by default */
+        .form-popup {
+            display: none;
+        }
+        tr td:first-child:before{
+            counter-increment: Serial;      /* Increment the Serial counter */
+            content: counter(Serial); /* Display the counter */
+        }
+    </style>
+{% endblock %}
 {% block content %}
-    <p>logged in as <b>{{tg_handle_of_user}}</b></p>
+    <p>logged in as <b>{{tg_handle_of_user}}</b></p> <a href="{{url_for('logout')}}"><button>Logout</button></a>
     <h3>Dashboard</h3>
-    <button>Add Group</button>
-    <button>Delete Group</button>
-    <button>Direct Message</button>
+    <button class="open-button" onclick="openForm()">Configure Accounts</button>
+    <div class="form-popup" id="myForm">
+        <form action="{{url_for('account_config')}}" class="form-container" method="post">
+            <label> Enter the Facebook page access token</label>
+            <input type="text" name="fb_token" /> <br/>
+            <label> Enter the Facebook page ID</label>
+            <input type="text" name="fb_page_id" /> <br/>
+            <label> Enter the Twitter access token</label>
+            <input type="text" name="twitter_token" /> <br/>
+            <label> Enter the Linkedin access token</label>
+            <input type="text" name="linkedin_token" /> <br/>
+            <input type="submit" value="Submit" name="input_add_grp"/>
+            <button type="submit" class="btn cancel" name="close_form" onclick="closeForm()">Close</button>
+        <!--    <button type="submit" class="btn" name="add_grp">Submit</button>-->
+        </form>
+    </div>
+    <a href="{{url_for('message_form')}}"> <button >Direct Message</button> </a>
     <h5>Groups</h5>
-    
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Group name</th>
+        </tr>
+        <tr>
+            {% for item in groups_details %}
+            <td></td>
+            <td>{{item.group_name}}</td>
+            <td><input type="checkbox" name="user_groups" value="{{item.grp_id}}"></td>
+            {% endfor %}
+        </tr>
+    </table>
+    <br/>
+    <a ><button id="select_grp_btn"> Select Groups to post</button></a>
+
+    <p id="get_grp"></p>
+    <script>
+        function openForm() {
+          document.getElementById("myForm").style.display = "block";
+        }
+        
+        function closeForm() {
+          document.getElementById("myForm").style.display = "none";
+        }
+
+        document.getElementById('select_grp_btn').onclick = function() {  
+            var markedCheckbox = document.getElementsByName('user_groups');  
+            var all_selected_groups = [];
+            for (var checkbox of markedCheckbox) {  
+                if (checkbox.checked)  
+                all_selected_groups.push(checkbox.value);  
+            } 
+            
+            fetch('/select_group',{
+                method: "post",
+                body: JSON.stringify(all_selected_groups),
+                headers: new Headers({
+                    "content-type": "application/json"
+                })
+            }).then(function (response) {
+                if (response.status !== 200) {
+                console.log(`Looks like there was a problem. Status code: ${response.status}`);
+                return;
+                }
+                document.getElementById("get_grp").innerHTML = "Message will be posted on selected groups now."
+            });
+            
+        }  
+    </script>
 {% endblock %}
